@@ -11,7 +11,6 @@ import java.util.Objects;
 public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
-        Database.checkDatabaseConnection();
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("/com/example/wedconnect/index.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1300, 700);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/wedconnect/styles.css")).toExternalForm());

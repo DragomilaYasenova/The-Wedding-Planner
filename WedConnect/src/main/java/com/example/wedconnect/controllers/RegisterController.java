@@ -1,5 +1,7 @@
 package com.example.wedconnect.controllers;
 
+import com.example.wedconnect.database.Database;
+import com.example.wedconnect.user.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -20,5 +22,11 @@ public class RegisterController extends MainController {
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
+        if (password.equals(confirmPassword)) {
+            User user = new User(username, password);
+            Database.addUser(user);
+        } else {
+            System.out.println("Passwords do not match!");
+        }
     }
 }

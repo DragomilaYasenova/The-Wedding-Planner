@@ -1,13 +1,17 @@
 package com.example.wedconnect.database;
 
+import com.example.wedconnect.user.User;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class Database {
+    private static Connection connection;
+
     public static void checkDatabaseConnection() {
         Properties properties = new Properties();
 
@@ -24,9 +28,9 @@ public class Database {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            try (Connection connection = DriverManager.getConnection(url, user, password)) {
+            try {
+                connection = DriverManager.getConnection(url, user, password);
                 System.out.println("Connected to the database!");
-
             } catch (SQLException e) {
                 System.err.println("Failed to connect to the database.");
                 e.printStackTrace();
@@ -34,6 +38,28 @@ public class Database {
 
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public static void addUser(User user) {
+        checkDatabaseConnection();
+        String query = "INSERT INTO `user` (username, password) VALUES (?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.executeUpdate();
+            System.out.println("User added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }
