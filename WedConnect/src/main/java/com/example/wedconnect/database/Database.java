@@ -3,10 +3,7 @@ package com.example.wedconnect.database;
 import com.example.wedconnect.user.User;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 
 public class Database {
@@ -43,6 +40,12 @@ public class Database {
 
     public static void addUser(User user) {
         checkDatabaseConnection();
+
+        if (userExists(user.getUsername())) {
+            System.out.println("User already exists!");
+            return;
+        }
+
         String query = "INSERT INTO `user` (username, password) VALUES (?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -61,5 +64,48 @@ public class Database {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public static boolean userExists(String username) {
+        checkDatabaseConnection();
+        String query = "SELECT 1 FROM `user` WHERE username = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean loginUser(User user) {
+        checkDatabaseConnection();
+        String query = "SELECT 1 FROM `user` WHERE username = ? AND password = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getPassword());
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return false;
     }
 }
