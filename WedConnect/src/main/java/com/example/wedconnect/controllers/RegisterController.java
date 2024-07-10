@@ -6,7 +6,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class RegisterController extends MainController {
+import java.io.IOException;
+
+import static com.example.wedconnect.database.Database.loginUser;
+
+public class RegisterController extends PageController {
     @FXML
     private TextField usernameField;
 
@@ -17,7 +21,7 @@ public class RegisterController extends MainController {
     private PasswordField confirmPasswordField;
 
     @FXML
-    protected void handleRegister() {
+    protected void handleRegister() throws IOException {
         String username = usernameField.getText();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
@@ -25,6 +29,8 @@ public class RegisterController extends MainController {
         if (password.equals(confirmPassword)) {
             User user = new User(username, password);
             Database.addUser(user);
+            loginUser(user);
+            handleClientHomePage();
         } else {
             System.out.println("Passwords do not match!");
         }

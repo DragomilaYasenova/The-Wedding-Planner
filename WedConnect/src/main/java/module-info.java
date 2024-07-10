@@ -12,4 +12,6 @@ module com.example.wedconnect {
     opens com.example.wedconnect.controllers to javafx.fxml;
     exports com.example.wedconnect.user;
     opens com.example.wedconnect.user to javafx.fxml;
+    exports com.example.wedconnect.Scene;
+    opens com.example.wedconnect.Scene to javafx.fxml;
 }

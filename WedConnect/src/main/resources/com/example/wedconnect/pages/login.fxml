@@ -26,6 +26,7 @@
             <TextField fx:id="usernameField" promptText="Username"/>
             <PasswordField fx:id="passwordField" promptText="Password"/>
             <Button text="Sign In" onAction="#handleLogin" styleClass="button"/>
+
         </HBox>
     </VBox>
 
